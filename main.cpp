@@ -129,14 +129,14 @@ int main() {
     cout << "INITIAL BOARD" << endl;
     cout << "ATTACKS: " << state << endl << endl;
     printBoard(board);
-    cout << "----------------------------------------------------------" << endl << endl << endl;
+    cout << "----------------------------------------------------------" << endl << endl;
 
     do {
         board = columnOptimization(board);
         newState = calculateState(board);
 
         if (newState == 0) {
-            cout << endl << "----------------------------------------------------------" << endl;
+            cout << "----------------------------------------------------------" << endl << endl;
             cout << "SOLUTION BOARD" << endl;
             cout << "ATTACKS: " << newState << endl << endl;
             printBoard(board);
