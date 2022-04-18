@@ -3,7 +3,7 @@
 
 const unsigned int N = 8;
 enum position {
-    QUEEN = -1
+    QUEEN = 1
 };
 
 #endif
