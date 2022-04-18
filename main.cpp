@@ -2,8 +2,8 @@
 #include <vector>
 #include <time.h>
 
-#include "board.h"
-#include "util.h"
+#include "model/Board.h"
+#include "model/Util.h"
 
 using namespace std;
 
