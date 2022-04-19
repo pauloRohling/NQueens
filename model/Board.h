@@ -19,7 +19,6 @@ vector<vector<bool>> generateNewBoard() {
     vector<bool> line(N, 0);
     vector<vector<bool>> board(N, line);
     randomizeQueens(board);
-
     return board;
 }
 
@@ -31,7 +30,7 @@ void printBoard(const vector<vector<bool>> &board) {
     for (int i = 0; i < N; i++) {
         for (int j = 0; j < N; j++) {
             if (board[i][j] == QUEEN) {
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 17);
+                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 63);
                 cout << board[i][j];
                 SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
                 cout << " ";
