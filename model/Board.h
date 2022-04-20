@@ -54,8 +54,7 @@ public:
     }
 
     void print(const string title = "BOARD") {
-        cout << "INITIAL BOARD" << endl;
-        cout << "ATTACKS: " << this->attacks << endl;
+        cout << title << endl << "ATTACKS: " << this->attacks << endl;
 
         for (int i = 0; i < this->size; i++) {
             for (int j = 0; j < this->size; j++) {
