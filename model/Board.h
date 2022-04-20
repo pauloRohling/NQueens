@@ -3,47 +3,136 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include <random>
 #include <windows.h>
 
-#include "Constants.h"
+#include "Util.h"
 
 using namespace std;
 
-void randomizeQueens(vector<vector<bool>> &board) {
-    for (int i = 0; i < N; i++)
-        board[rand() % 8][i] = QUEEN;
-}
+class Board {
 
-vector<vector<bool>> generateNewBoard() {
-    vector<bool> line(N, 0);
-    vector<vector<bool>> board(N, line);
-    randomizeQueens(board);
-    return board;
-}
+private:
+    vector<vector<bool>> board;
 
-void deleteBoard(vector<vector<bool>> &board) {
-    board.clear();
-}
+public:
+    unsigned int size;
+    unsigned int attacks;
 
-void printBoard(const vector<vector<bool>> &board) {
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
-            if (board[i][j] == QUEEN) {
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 63);
-                cout << board[i][j];
-                SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-                cout << " ";
-            } else {
-                cout << board[i][j] << " ";
+    Board() { }
+
+    Board(unsigned int N) {
+        this->size = N;
+        this->reset();
+        this->attacks = this->calculateBoardQuality();
+    }
+
+    ~Board() {
+        this->board.clear();
+    }
+
+    int calculateBoardQuality() {
+        this->attacks = this->getLineOrColumnAttacks() + this->getDiagonalAttacks() + 
+            this->getReverseDiagonalAttacks(this->board);
+        return this->attacks;
+    }
+
+    void reset() {
+        this->board.clear();
+        vector<bool> line(this->size, false);
+        vector<vector<bool>> matrix(this->size, line);
+        this->board = matrix;
+        this->placeQueens();
+    }
+
+    void placeQueens() {
+        // for (int i = 0; i < this->size; i++)
+        //     this->board[i][i] = QUEEN;
+        for (int i = 0; i < this->size; i++)
+            board[rand() % 8][i] = QUEEN;
+    }
+
+    void print(const string title = "BOARD") {
+        cout << "INITIAL BOARD" << endl;
+        cout << "ATTACKS: " << this->attacks << endl;
+
+        for (int i = 0; i < this->size; i++) {
+            for (int j = 0; j < this->size; j++) {
+                if (this->board[i][j] == QUEEN) {
+                    setConsoleColor(BLUE);
+                    cout << this->board[i][j];
+                    setConsoleColor(WHITE);
+                    cout << " ";
+                } else {
+                    cout << this->board[i][j] << " ";
+                }
             }
+            cout << endl;
         }
-
+        setConsoleColor(WHITE);
         cout << endl;
     }
 
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 7);
-    cout << endl;
-}
+    typename vector<vector<bool>>::reference operator[](int i) {
+        return this->board[i];
+    }
+
+    typename vector<vector<bool>>::const_reference operator[](int i) const {
+        return this->board[i];
+    }
+
+private:
+    int getLineOrColumnAttacks() {
+        int attacks = 0;
+
+        for (int i = 0; i < this->size; i++) {
+            int queens = 0;
+            for (int j = 0; j < this->size; j++)
+                if (this->board[i][j] == QUEEN)
+                    queens++;
+            attacks += combination2(queens);
+
+            queens = 0;
+            for (int j = 0; j < this->size; j++)
+                if (this->board[j][i] == QUEEN)
+                    queens++;
+            attacks += combination2(queens);
+        }
+
+        return attacks;
+    }
+
+    int getReverseDiagonalAttacks(vector<vector<bool>> board) {
+        int attacks = 0;
+        vector<vector<bool>> diagonals((2 * this->size) - 1);
+
+        for (int i = 0; i < this->size; i++)
+            for (int j = 0; j < this->size; j++)
+                diagonals[i + j].push_back(board[j][i]);
+
+        for (int i = 0; i < diagonals.size(); i++) {
+            int queens = 0;
+            for (int j = 0; j < diagonals[i].size(); j++)
+                if (diagonals[i][j] == QUEEN)
+                    queens++;
+            attacks += combination2(queens);
+        }
+
+        return attacks;
+    }
+
+    int getDiagonalAttacks() {
+        vector<bool> line(this->size, false);
+        vector<vector<bool>> newBoard(this->size, line);
+
+        for (int i = 0; i < this->size; i++)
+            for (int j = this->size - 1; j >= 0; j--)
+                newBoard[i][this->size - j - 1] = this->board[i][j];
+
+        return getReverseDiagonalAttacks(newBoard);
+    }
+
+};
 
 #endif

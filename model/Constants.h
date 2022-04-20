@@ -1,9 +1,13 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-const unsigned int N = 8;
-enum position {
+enum Position {
     QUEEN = 1
+};
+
+enum ConsoleColor {
+    BLUE = 63,
+    WHITE = 7
 };
 
 #endif

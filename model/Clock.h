@@ -8,7 +8,9 @@ using namespace std;
 
 class Clock {
 public:
-    Clock() {}
+    Clock() {
+        this->tick();
+    }
 
     void tick() {
         this->start = clock();
