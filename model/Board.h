@@ -47,10 +47,8 @@ public:
     }
 
     void placeQueens() {
-        // for (int i = 0; i < this->size; i++)
-        //     this->board[i][i] = QUEEN;
         for (int i = 0; i < this->size; i++)
-            board[rand() % 8][i] = QUEEN;
+            this->board[i][i] = QUEEN;
     }
 
     void print(const string title = "BOARD") {
@@ -70,7 +68,7 @@ public:
             cout << endl;
         }
         setConsoleColor(WHITE);
-        cout << endl;
+        cout << endl << endl;
     }
 
     typename vector<vector<bool>>::reference operator[](int i) {

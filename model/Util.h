@@ -18,9 +18,7 @@ void setConsoleColor(int color) {
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
 
-int randSeed() {
-    // int seed = time(nullptr);
-    int seed = 1;
+int randSeed(int seed = time(nullptr)) {
     srand(seed);
     return seed;
 }

@@ -25,7 +25,7 @@ public:
         return this->board;
     }
 
-    void randomizeOneQueen() {
+    void randomizeOneQueenForRandom() {
         int randomColumn = rand() % this->board.size;
 
         for (int i = 0; i < this->board.size; i++)
@@ -35,20 +35,37 @@ public:
         this->board.calculateBoardQuality();
     }
 
-    Board calculateNextState() {
+    void randomizeOneQueenForParity() {
+        int randomColumn = rand() % (this->board.size - 1);
+
+        int iQueenPosition = this->getQueenPosition(randomColumn);
+        int jQueenPosition = this->getQueenPosition(randomColumn + 1);
+
+        this->board[iQueenPosition][randomColumn] = 0;
+        this->board[jQueenPosition][randomColumn + 1] = 0;
+
+        this->board[jQueenPosition][randomColumn] = 1;
+        this->board[iQueenPosition][randomColumn + 1] = 1;
+
+        this->board.calculateBoardQuality();
+    }
+
+    Board calculateNextStateForRandom() {
         Board optimizedBoard = this->board;
+        int optimizedState = optimizedBoard.attacks;
 
         for (int j = 0; j < this->board.size; j++) {
             for (int i = 0; i < this->board.size; i++) {
                 if (this->board[i][j] != QUEEN) {
                     int previousState = this->board.attacks;
-
-                    int queenPosition = this->changeQueenPositionOf(j);
+                    int queenPosition = this->getQueenPosition(j);
+                    this->board[queenPosition][j] = 0;
                     this->board[i][j] = QUEEN;
 
-                    // Verificando melhoria
-                    if (this->board.calculateBoardQuality() < optimizedBoard.attacks)
+                    if (this->board.calculateBoardQuality() < optimizedBoard.attacks) {
                         optimizedBoard = this->board;
+                        optimizedState = optimizedBoard.attacks;
+                    }
 
                     this->board[i][j] = 0;
                     this->board[queenPosition][j] = QUEEN;
@@ -58,21 +75,55 @@ public:
         }
 
         this->board = optimizedBoard;
-        this->board.calculateBoardQuality();
+        this->board.attacks = optimizedState;
         return this->board;
     }
 
+    Board calculateNextStateForParity() {
+        Board optimizedBoard = this->board;
+        int optimizedState = optimizedBoard.attacks;
 
-private:
-    int changeQueenPositionOf(int column) {
-        int queenPosition;
-        for (int k = 0; k < this->board.size; k++) {
-            if (this->board[k][column] == QUEEN) {
-                this->board[k][column] = 0;
-                queenPosition = k;
+        for (int i = 0; i < this->board.size - 1; i++) {
+            
+            int iQueenPosition = this->getQueenPosition(i);
+            for (int j = i + 1; j < this->board.size; j++) {
+                int jQueenPosition = this->getQueenPosition(j);
+                int previousState = this->board.attacks;
+
+                this->board[iQueenPosition][i] = 0;
+                this->board[jQueenPosition][j] = 0;
+
+                this->board[jQueenPosition][i] = 1;
+                this->board[iQueenPosition][j] = 1;
+
+                if (this->board.calculateBoardQuality() < optimizedBoard.attacks) {
+                    optimizedBoard = this->board;
+                    optimizedState = optimizedBoard.attacks;
+                }
+
+                this->board[iQueenPosition][i] = 1;
+                this->board[jQueenPosition][j] = 1;
+
+                this->board[jQueenPosition][i] = 0;
+                this->board[iQueenPosition][j] = 0;
+
+                this->board.attacks = previousState;
             }
         }
-        return queenPosition;
+
+        this->board = optimizedBoard;
+        this->board.attacks = optimizedState;
+        return this->board;
+    }
+
+private:
+    int getQueenPosition(int column) {
+        for (int i = 0; i < this->board.size; i++)
+            if (this->board[i][column] == QUEEN)
+                return i;
+
+        this->board.print();
+        throw invalid_argument("getQueenPosition -> Column " + to_string(column) + " does not have a queen");
     }
 
 };
