@@ -11,11 +11,86 @@
 
 using namespace std;
 
-int main() {
-    cleanScreen();
-
+void simulateParity() {
     Clock clock;
-    int seed = randSeed(1); // 1650384373
+
+    cout << "Using PARITY implementation. Please wait..." << endl;
+    clock.tick();
+
+    HillClimbing<N> hillClimbing;
+    Board board = hillClimbing.getBoard();
+    int iterations, newState, state = board.attacks;
+
+    board.print("INITIAL STATE");
+
+    for (iterations = 0; true; iterations++) {
+        board = hillClimbing.calculateNextStateForParity();
+
+        board.print();
+
+        newState = board.attacks;
+
+        if (newState == 0) {
+            board.print("SOLUTION");
+            break;
+        }
+        if (state == newState) {
+            hillClimbing.randomizeOneQueenForParity();
+            hillClimbing.getBoard().print();
+        }
+
+        state = newState;
+    };
+
+    double endTime = clock.tock();
+
+    cout << "TIME SPENT: " << endTime << endl;
+    cout << "ITERATIONS: " << iterations << endl;
+
+    cout << "Completed" << endl;
+}
+
+void simulateRandom() {
+    Clock clock;
+
+    cout << "Using RANDOM implementation. Please wait..." << endl;
+    clock.tick();
+
+    HillClimbing<N> hillClimbing;
+    Board board = hillClimbing.getBoard();
+    int iterations, newState, state = board.attacks;
+
+    board.print("INITIAL STATE");
+
+    for (iterations = 0; true; iterations++) {
+        board = hillClimbing.calculateNextStateForRandom();
+
+        board.print();
+
+        newState = board.attacks;
+
+        if (newState == 0) {
+            board.print("SOLUTION");
+            break;
+        }
+        if (state == newState) {
+            hillClimbing.randomizeOneQueenForRandom();
+            hillClimbing.getBoard().print();
+        }
+
+        state = newState;
+    };
+
+    double endTime = clock.tock();
+
+    cout << "TIME SPENT: " << endTime << endl;
+    cout << "ITERATIONS: " << iterations << endl;
+
+    cout << "Completed" << endl;
+}
+
+void generateData() {
+    Clock clock;
     stringstream logFile;
     logFile << "ID;TIME;ITERATIONS;IMPLEMENTATION" << "\n";
 
@@ -24,12 +99,16 @@ int main() {
         for (int simulation = 0; simulation < SIMULATIONS; simulation++) {
             clock.tick();
 
-            HillClimbing<8> hillClimbing;
+            HillClimbing<N> hillClimbing;
             Board board = hillClimbing.getBoard();
             int iterations, newState, state = board.attacks;
 
             for (iterations = 0; true; iterations++) {
-                board = (implementation == RANDOM) ? hillClimbing.calculateNextStateForRandom() : hillClimbing.calculateNextStateForParity();
+                if (implementation == RANDOM)
+                    board = hillClimbing.calculateNextStateForRandom();
+                else
+                    board = hillClimbing.calculateNextStateForParity();
+                    
                 newState = board.attacks;
 
                 if (newState == 0)
@@ -48,57 +127,15 @@ int main() {
     createOutputFile(logFile.str(), "log");
 
     cout << "Completed" << endl;
+}
+
+int main() {
+    randSeed(1); // 1650384373
+    cleanScreen();
+
+    // generateData();
+    simulateRandom();
+    // simulateParity();
 
     return 0;
 }
-
-
-
-// int main() {
-//     cleanScreen();
-
-//     Clock clock;
-//     int seed = randSeed(1); // 1650384373
-//     stringstream logFile;
-//     logFile << "ID;SEED;TIME;ITERATIONS" << "\n";
-
-//     for (int i = 0; i < SIMULATIONS; i++) {
-//         clock.tick();
-
-//         HillClimbing<8> hillClimbing;
-//         Board board = hillClimbing.getBoard();
-//         int iterations, newState, state = board.attacks;
-
-//         board.print("INITIAL BOARD");
-
-//         for (iterations = 0; true; iterations++) {
-//             board = hillClimbing.calculateNextState2();
-//             newState = board.attacks;
-
-//             if (newState == 0) {
-//                 board.print("SOLUTION BOARD");
-//                 break;
-//             } else if (state == newState) {
-//                 hillClimbing.randomizeOneQueen();
-//             } else {
-//                 board.print("UPDATED BOARD");
-//             }
-
-//             state = newState;
-//         };
-
-//         double endTime = clock.tock();
-        
-//         cout << "SEED: " << seed << endl;
-//         cout << "TIME SPENT: " << endTime << endl;
-//         cout << "ITERATIONS: " << iterations << endl;
-//         cout << endl << endl;
-
-//         logFile << ID << ";" << seed << ";" << endTime << ";" << iterations << "\n";
-//     }
-
-//     createOutputFile(logFile.str(), "log" + to_string(ID));
-    
-//     pauseScreen();
-//     return 0;
-// }

@@ -36,16 +36,20 @@ public:
     }
 
     void randomizeOneQueenForParity() {
-        int randomColumn = rand() % (this->board.size - 1);
+        int randomColumn = rand() % (this->board.size);
+        int randomColumn2 = rand() % (this->board.size);
+
+        while (randomColumn == randomColumn2)
+            randomColumn2 = rand() % (this->board.size);
 
         int iQueenPosition = this->getQueenPosition(randomColumn);
-        int jQueenPosition = this->getQueenPosition(randomColumn + 1);
+        int jQueenPosition = this->getQueenPosition(randomColumn2);
 
         this->board[iQueenPosition][randomColumn] = 0;
-        this->board[jQueenPosition][randomColumn + 1] = 0;
+        this->board[jQueenPosition][randomColumn2] = 0;
 
         this->board[jQueenPosition][randomColumn] = 1;
-        this->board[iQueenPosition][randomColumn + 1] = 1;
+        this->board[iQueenPosition][randomColumn2] = 1;
 
         this->board.calculateBoardQuality();
     }

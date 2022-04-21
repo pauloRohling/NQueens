@@ -88,13 +88,13 @@ private:
             for (int j = 0; j < this->size; j++)
                 if (this->board[i][j] == QUEEN)
                     queens++;
-            attacks += combination2(queens);
+            attacks += calculateAttacks(queens);
 
             queens = 0;
             for (int j = 0; j < this->size; j++)
                 if (this->board[j][i] == QUEEN)
                     queens++;
-            attacks += combination2(queens);
+            attacks += calculateAttacks(queens);
         }
 
         return attacks;
@@ -113,7 +113,7 @@ private:
             for (int j = 0; j < diagonals[i].size(); j++)
                 if (diagonals[i][j] == QUEEN)
                     queens++;
-            attacks += combination2(queens);
+            attacks += calculateAttacks(queens);
         }
 
         return attacks;
@@ -130,6 +130,13 @@ private:
         return getReverseDiagonalAttacks(newBoard);
     }
 
+    /**
+     * Attacks(n) = Cn/² = N! / (2 * (N - 2)!)
+     * Attacks(n) = (N * (N - 1)) / 2
+     */
+    int calculateAttacks(int queens) {
+        return (queens * (queens - 1)) / 2;
+    }
 };
 
 #endif

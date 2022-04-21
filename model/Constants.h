@@ -1,8 +1,6 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#include <vector>
-
 enum Implementation {
     RANDOM, PARITY
 };
@@ -17,5 +15,6 @@ enum ConsoleColor {
 };
 
 const unsigned int SIMULATIONS = 100;
+const unsigned int N = 64;
 
 #endif
